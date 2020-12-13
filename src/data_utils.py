@@ -92,6 +92,17 @@ def create_log_insert_lists(file_path_list: list, insert_columns: list, primary_
             [tuple(row) for row in insert_time_df.itertuples(index=False)])
 
 
+def expands_dfs(temp_df):
+    """Returns 2 dataframes which can be used for the users and time tables in Postgres."""
+    users_columns = ['userId', 'firstName', 'lastName', 'gender', 'level']
+    time_columns = ['ts']
+
+    song_df = temp_df[temp_df['auth'] == 'Logged In']
+    time_df = temp_df[temp_df['page'] == 'NextSong']
+
+    return (song_df[users_columns], time_df[time_columns])
+
+
 def _df_assertions(df: pd.DataFrame, target_columns: list, not_nullable_columns: list = None) -> None:
     """Assert statements to make sure the retrieved data is valid and clean before insertion into the Postgres table."""
     low_df_columns = [x.lower() for x in df.columns]
