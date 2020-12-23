@@ -1,6 +1,3 @@
-from psycopg2 import sql
-
-
 # DROP TABLES
 
 songplay_table_drop = "DROP TABLE IF EXISTS songplays"
@@ -58,7 +55,7 @@ CREATE TABLE IF NOT EXISTS artists (
 );
 """
 
-time_table_create = ("""
+time_table_create = """
 CREATE TABLE IF NOT EXISTS time (
     start_time timestamp PRIMARY KEY,   
     hour int,
@@ -67,40 +64,47 @@ CREATE TABLE IF NOT EXISTS time (
     year int,
     weekday int
 );
-""")
+"""
 
 # INSERT RECORDS
 
 songplay_table_insert = """
-INSERT INTO songplays (start_time, user_id, level, song_id, artist_id, session_id, location, user_agent) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+INSERT INTO songplays (start_time, user_id, level, song_id, artist_id, session_id, location, user_agent)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
 """
 
 user_table_insert = """
-INSERT INTO users (user_id, first_name, last_name, gender, level) VALUES (%s, %s, %s, %s, %s)
+INSERT INTO users (user_id, first_name, last_name, gender, level)
+VALUES (%s, %s, %s, %s, %s)
 ON CONFLICT (user_id) 
 DO UPDATE SET gender = EXCLUDED.gender, level = EXCLUDED.level; 
 """
 
 songs_table_insert = """
-INSERT INTO songs (song_id, title, artist_id, year, duration) VALUES (%s, %s, %s, %s, %s)
+INSERT INTO songs (song_id, title, artist_id, year, duration) 
+VALUES (%s, %s, %s, %s, %s)
 ON CONFLICT (song_id) 
 DO NOTHING; 
 """
 
 artists_table_insert = """
-INSERT INTO artists (artist_id, name, location, latitude, longitude) VALUES (%s, %s, %s, %s, %s)
+INSERT INTO artists (artist_id, name, location, latitude, longitude)
+VALUES (%s, %s, %s, %s, %s)
 ON CONFLICT (artist_id) 
 DO NOTHING; 
 """
 
 time_table_insert = """
-INSERT INTO time (start_time, hour, day, month, year, weekday) VALUES (%s, %s, %s, %s, %s, %s)
+INSERT INTO time (start_time, hour, day, month, year, weekday)
+VALUES (%s, %s, %s, %s, %s, %s)
 ON CONFLICT (start_time) 
 DO NOTHING; 
 """
 
 # QUERY LISTS
 
-create_table_queries = [songplay_table_create, user_table_create, songs_table_create, artists_table_create, time_table_create]
+create_table_queries = [songplay_table_create, user_table_create, songs_table_create,
+                        artists_table_create, time_table_create]
 drop_table_queries = [songplay_table_drop, user_table_drop, songs_table_drop, artists_table_drop, time_table_drop]
-insert_table_queries = [songplay_table_insert, user_table_insert, songs_table_insert, artists_table_insert, time_table_insert]
+insert_table_queries = [songplay_table_insert, user_table_insert, songs_table_insert,
+                        artists_table_insert, time_table_insert]
