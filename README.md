@@ -1,56 +1,51 @@
-## Leverage the Postgres music database
+## What music are our users listening to? 
 
-This project contains notebooks and scripts that do the following:
-- Create a Postgres table based on .json files containing song and log data 
-- Run simple queries against this newly created database
+<img src="https://images.pexels.com/photos/3756943/pexels-photo-3756943.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260">
 
-### Install instructions
+Source: https://www.pexels.com
 
-Before you can run the scripts or work with the project interactively through the notebooks there 2 steps you need to take:
-- Activate a virtual environment
-- Populate it with required packages
+This very important question could not be answered, until now. As of today, the music database is ready to use!
 
-#### Anaconda
+### Insights help us grow
 
-Open a terminal, change your directory to this project, and enter the following code. If you want to play around in the notebook I suggest you install jupyter in the 
-environment as well. As a default it is commented out.
+In the current music streaming industry, personalized content and recommendations are key for continuous growth. 
+Competition is fierce and improving every day, so our customers expect nothing less from us. In order to do that,
+our analytics team needs to be able to answer the following questions:
+- what music do we expect our users have an interest in, besides the music they are already listening?
+- how is our product used? e.g.,
+    - what is the average session length of a typical user?
+    - are there seasonal differences in usage?
+    - is the listening behaviour different during the day compared to the evening?
+- what artists do our users like, and is that different in comparison to typical hit lists? If so, how can we leverage
+that?
 
-```bash
-conda env create -f environment.yml
-```
+With the new database, our analytics team has all the data they need to answer these important questions and more.
 
-Next, activate the conda environment.
+### The schema
 
-```bash
-conda activate postgres
-```
+<img src="https://user-images.githubusercontent.com/49920622/103029645-85da9500-455a-11eb-8191-14369838eea6.png">
 
-#### Pip
+### Example queries
 
-Open a terminal, change your directory to this project, and enter the following:
+- number of unique users and songs played per year
 
-```bash
-python -m venv venv
-```
+```sql
+SELECT year
+,    count(*) as n_songs_played
+,    count(distinct user_id) as n_distinct_users
 
-This line of code executes the venv module and created a new folder called `venv`. Next, activate the environment.
-
-```bash
-venv\Scripts\activate
-```
-
-Your terminal prefix should now have changed from (base) to (venv) (base). Finally, install all required packages
-in the new virtual environment. If you want to play around in the notebook I suggest you install jupyter in the 
-environment as well. As a default it is commented out.
-
-```bash
-pip install -r requirements.txt
+FROM
+    songplays
+    inner join time on time.start_time=songplays.start_time
+    
+GROUP BY
+    year
 ```
 
 ### Entry point
 
+Please start in the notebooks/main.ipynb for the best experience.
+
 ### Contact
 
-### For reviewers 
-
-
+In case of any questions or comments please contact me directly via ernst@sparkify.com.
