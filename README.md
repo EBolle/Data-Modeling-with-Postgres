@@ -1,6 +1,6 @@
 ## What music are our users listening to? 
 
-<img src="https://images.pexels.com/photos/3756943/pexels-photo-3756943.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260" height="500" width="500">
+<img src="https://images.pexels.com/photos/3756943/pexels-photo-3756943.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260" height="958" width="640">
 
 Source: https://www.pexels.com
 
