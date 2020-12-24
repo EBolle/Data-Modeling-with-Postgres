@@ -2,6 +2,32 @@
 
 
 import pandas as pd
+import psycopg2
+
+
+def create_database(username: str, password: str):
+    """
+    - Creates and connects to the sparkifydb
+    - Returns the connection and cursor to sparkifydb
+    """
+
+    # connect to default database
+    conn = psycopg2.connect(f"host=127.0.0.1 dbname=studentdb user={username} password={password}")
+    conn.set_session(autocommit=True)
+    cur = conn.cursor()
+
+    # create sparkify database with UTF8 encoding
+    cur.execute("DROP DATABASE IF EXISTS sparkifydb")
+    cur.execute("CREATE DATABASE sparkifydb WITH ENCODING 'utf8' TEMPLATE template0")
+
+    # close connection to default database
+    conn.close()
+
+    # connect to sparkify database
+    conn = psycopg2.connect("host=127.0.0.1 dbname=sparkifydb user=student password=student")
+    cur = conn.cursor()
+
+    return cur, conn
 
 
 def create_path_list(file_path: str, extension: str = '.json', sort_list: bool = False) -> list:
@@ -66,10 +92,8 @@ class DataValidation:
         assert sorted(found_cols) == sorted(low_target_columns), f"The columns do not match."
 
         if self.not_nullable_columns:
-            assert df[
-                       self.not_nullable_columns].isnull().values.any() == False, f"Missing values in not nullable target columns."
+            assert df[self.not_nullable_columns].isnull().values.any() == False, "Missing values in not nullable target columns."
         else:
-            assert df[
-                       self.columns].isnull().values.any() == False, f"Missing values in the target columns, if allowed please specify these columns."
+            assert df[self.columns].isnull().values.any() == False, "Missing values in the target columns, if allowed please specify these columns."
 
         return None

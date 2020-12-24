@@ -44,14 +44,14 @@ GROUP BY
 
 ### Instructions
 
-Before you can run the notebook and scripts, there are 2 things you need to do:
-- create and activate the virtual environment
+Before you can run the notebook and scripts, there are 3 things you need to do:
+- create and activate a virtual environment
 - create a .env file and set your credentials
 
-#### create and activate the virtual environment 
+#### create and activate a virtual environment 
 
-You can either use Anaconda or venv to create the virtual environment. Regardless your choice, you have to open
-a (Anaconda) prompt, clone the project, and navigate to the project folder.
+You can either use Anaconda or venv to create the virtual environment. Regardless of your choice, you have to open
+a (Anaconda) prompt, clone the project, and navigate to the project folder. Next, enter the following:
 
 ##### Anaconda
 ```bash
@@ -75,4 +75,4 @@ You are now ready to use the project, it is recommended to start by looking at n
 
 ### Contact
 
-In case on suggestions or remarks please contact the Data Engineering department.
+In case of suggestions or remarks please contact the Data Engineering department.
