@@ -24,7 +24,7 @@ CREATE TABLE IF NOT exists songplays (
 
 user_table_create = """
 CREATE TABLE IF NOT EXISTS users (
-    user_id text PRIMARY KEY,   
+    user_id int PRIMARY KEY,   
     first_name text,
     last_name text,
     gender text,

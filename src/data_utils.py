@@ -1,4 +1,4 @@
-"""Function and class to support the preprocessing module."""
+"""Function and class to support the preprocessing module, and to create the database."""
 
 
 import pandas as pd

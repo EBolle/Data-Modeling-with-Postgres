@@ -23,23 +23,57 @@ With the new database, our analytics team has all the data they need to answer t
 
 ### The schema
 
-<img src="https://user-images.githubusercontent.com/49920622/103029645-85da9500-455a-11eb-8191-14369838eea6.png">
+<img src="https://user-images.githubusercontent.com/49920622/103062485-97e62300-45ae-11eb-908d-4f27cca6f2a6.png">
 
 ### Example queries
 
-- number of unique users and songs played per year
+- What are the differences in activity during the week? 
 
 ```sql
-SELECT year
+SELECT time.weekday
 ,    count(*) as n_songs_played
-,    count(distinct user_id) as n_distinct_users
+,    count(distinct sp.user_id) as n_unique_users
+,    count(*) / count(distinct sp.user_id) as songs_per_user
+,    count(*) / sum(count(*)) over () as perc_total_songs_played
 
 FROM
-    songplays
-    inner join time on time.start_time=songplays.start_time
+    songplays as sp
+    inner join time on time.start_time = sp.start_time
     
 GROUP BY
-    year
+    time.weekday
+```
+
+- Is there a difference in behaviour between paid and free users?
+
+```sql
+SELECT level
+,    count(*) as n_songs_played
+,    count(distinct user_id) as n_unique_users
+,    count(*) / count(distinct user_id) as songs_per_user
+,    count(*) / sum(count(*)) over () as perc_level
+
+FROM
+    songplays as sp
+    
+GROUP BY
+    level
+```
+
+- What is the gender distribution of our users, and are their differences in their activity?
+
+```sql
+SELECT users.gender
+,    count(*) as n_songs_played
+,    count(distinct sp.user_id) as n_unique_users
+,    count(*) / sum(count(*)) over () as perc_songs_played
+
+FROM
+    songplays as sp
+    inner join users on users.user_id = sp.user_id
+    
+GROUP BY
+    users.gender
 ```
 
 ### Instructions
@@ -47,6 +81,8 @@ GROUP BY
 Before you can run the notebook and scripts, there are 3 things you need to do:
 - create and activate a virtual environment
 - create a .env file and set your credentials
+
+Furthermore, note that the logic needed to execute either the scripts or the notebook is stored in the /src folder.
 
 #### create and activate a virtual environment 
 
@@ -71,7 +107,7 @@ Since this project needs to connect to a database, we need to store our credenti
 simple you can update the .env.example file, and remove .example from the filename. For more information about working
 with secrets look [here](https://pybit.es/persistent-environment-variables.html).
 
-You are now ready to use the project, it is recommended to start by looking at notebooks/main.ipynb.
+You are now ready to use the project, it is recommended to start by looking at notebooks/main.ipynb. 
 
 ### Contact
 
