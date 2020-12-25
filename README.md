@@ -54,7 +54,7 @@ SELECT level
 ,    count(*) / sum(count(*)) over () as perc_level
 
 FROM
-    songplays as sp
+    songplays
     
 GROUP BY
     level
@@ -78,7 +78,7 @@ GROUP BY
 
 ### Instructions
 
-Before you can run the notebook and scripts, there are 3 things you need to do:
+Before you can run the notebook and scripts, there are a few things you need to do:
 - create and activate a virtual environment
 - create a .env file and set your credentials
 
@@ -107,7 +107,16 @@ Since this project needs to connect to a database, we need to store our credenti
 simple you can update the .env.example file, and remove .example from the filename. For more information about working
 with secrets look [here](https://pybit.es/persistent-environment-variables.html).
 
-You are now ready to use the project, it is recommended to start by looking at notebooks/main.ipynb. 
+### Start
+
+It is recommended to start by looking at notebooks/main.ipynb. Once finished, you can execute the scripts in
+a (Anaconda) prompt. Note that you must be in the top-level folder of the project with the virtual environment
+activated. Also, the order of execution matters.
+
+```bash
+python scripts/create_tables.py
+python scripts/etl.py
+```
 
 ### Contact
 

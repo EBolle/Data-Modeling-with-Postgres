@@ -1,94 +1,62 @@
-import os
-import glob
+from pathlib import Path
 import psycopg2
-import pandas as pd
 from settings import username, password
-from src.sql_queries import *
-
-
-def process_song_file(cur, filepath):
-    # open song file
-    df = 
-
-    # insert song record
-    song_data = 
-    cur.execute(song_table_insert, song_data)
-    
-    # insert artist record
-    artist_data = 
-    cur.execute(artist_table_insert, artist_data)
-
-
-def process_log_file(cur, filepath):
-    # open log file
-    df = 
-
-    # filter by NextSong action
-    df = 
-
-    # convert timestamp column to datetime
-    t = 
-    
-    # insert time data records
-    time_data = 
-    column_labels = 
-    time_df = 
-
-    for i, row in time_df.iterrows():
-        cur.execute(time_table_insert, list(row))
-
-    # load user table
-    user_df = 
-
-    # insert user records
-    for i, row in user_df.iterrows():
-        cur.execute(user_table_insert, row)
-
-    # insert songplay records
-    for index, row in df.iterrows():
-        
-        # get songid and artistid from song and artist tables
-        cur.execute(song_select, (row.song, row.artist, row.length))
-        results = cur.fetchone()
-        
-        if results:
-            songid, artistid = results
-        else:
-            songid, artistid = None, None
-
-        # insert songplay record
-        songplay_data = 
-        cur.execute(songplay_table_insert, songplay_data)
-
-
-def process_data(cur, conn, filepath, func):
-    # get all files matching extension from directory
-    all_files = []
-    for root, dirs, files in os.walk(filepath):
-        files = glob.glob(os.path.join(root,'*.json'))
-        for f in files :
-            all_files.append(os.path.abspath(f))
-
-    # get total number of files found
-    num_files = len(all_files)
-    print('{} files found in {}'.format(num_files, filepath))
-
-    # iterate over files and process
-    for i, datafile in enumerate(all_files, 1):
-        func(cur, datafile)
-        conn.commit()
-        print('{}/{} files processed.'.format(i, num_files))
+from src.preprocessing import LogPreProcess, SongPreProcess, SongPlaysPreProcess
+from src.sql_queries import insert_table_queries
 
 
 def main():
-    conn = psycopg2.connect(f"host=127.0.0.1 dbname=studentdb user={username} password={password}")
+    """
+    - connects to the database
+    - processes the raw song and log data
+    - inserts the processed data into Postgres
+    """
+    conn = psycopg2.connect(f"host=127.0.0.1 dbname=sparkifydb user={username} password={password}")
     cur = conn.cursor()
+    conn.set_session(autocommit=True)
 
-    process_data(cur, conn, filepath='data/song_data', func=process_song_file)
-    process_data(cur, conn, filepath='data/log_data', func=process_log_file)
+    artists_data, songs_data = process_song_file()
+    songplays_help_df, time_data, users_data = process_log_file()
+    songplays_data = process_songplays_data(artists_data, songs_data, songplays_help_df)
+
+    data_list = [songplays_data, users_data, songs_data, artists_data, time_data]
+    for idx, (data, query) in enumerate(zip(data_list, insert_table_queries), start=1):
+        print(f"inserting file {idx}/{len(data_list)}")
+        for row in data:
+            try:
+                cur.execute(query, row)
+            except psycopg2.Error as error:
+                print(f"Psychog2 error @ file {idx} row {row}: {error} NOTE: this file will not be inserted.")
 
     conn.close()
 
 
+def process_song_file():
+    song_path_list = Path('.') / 'data' / 'song_data'
+    songpp_instance = SongPreProcess(file_path=song_path_list)
+
+    artists_data, songs_data = songpp_instance.data_pipeline()
+
+    return artists_data, songs_data
+
+
+def process_log_file():
+    log_path_list = Path('.') / 'data' / 'log_data'
+    logpp_instance = LogPreProcess(file_path=log_path_list)
+
+    songsplays_help_df, time_data, users_data = logpp_instance.data_pipeline()
+
+    return songsplays_help_df, time_data, users_data
+
+
+def process_songplays_data(artists_data, songs_data, songplays_help_df):
+    songplays_instance = SongPlaysPreProcess(artists_data, songs_data, songplays_help_df)
+    songplays_data = songplays_instance.data_pipeline()
+
+    return songplays_data
+
+
 if __name__ == "__main__":
+    print("start ETL...")
     main()
+    print("done")
