@@ -1,4 +1,4 @@
--e .
+-e .  # executes setup.py -> 'src' becomes a (local) package
 
 jupyter==1.0.0
 numpy==1.18.5

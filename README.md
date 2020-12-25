@@ -83,6 +83,7 @@ Before you can run the notebook and scripts, there are a few things you need to 
 - create a .env file and set your credentials
 
 Furthermore, note that the logic needed to execute either the scripts or the notebook is stored in the /src folder.
+The Python version used for this project is 3.8.5. 
 
 #### create and activate a virtual environment 
 
@@ -99,6 +100,7 @@ conda activate postgres
 ```bash
 python -m venv venv
 venv\Scripts\Activate
+pip install -r requirements.txt 
 ```
 
 #### create a .env file and set your credentials
