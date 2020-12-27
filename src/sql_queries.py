@@ -18,7 +18,8 @@ CREATE TABLE IF NOT exists songplays (
     artist_id text, 
     session_id int,
     location text,
-    user_agent text
+    user_agent text,
+    CONSTRAINT not_null_check CHECK (NOT (start_time, user_id, level) IS NULL)
 );
 """
 
@@ -29,7 +30,7 @@ CREATE TABLE IF NOT EXISTS users (
     last_name text,
     gender text,
     level text,
-    CONSTRAINT not_null_check CHECK (NOT (level) IS NULL)
+    CONSTRAINT not_null_check CHECK (NOT (gender, level) IS NULL)
 );
 """
 
